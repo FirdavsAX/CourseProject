@@ -1,62 +1,77 @@
-﻿// AuthController.cs
-using CourseProject.ViewModels;
+﻿using CourseProject.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using CourseProject.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using CourseProject.Models.Entities;
 
 namespace CourseProject.Controllers;
 
 public class AuthController : Controller
 {
     private readonly IAuthService _authService;
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-    private readonly IConfiguration _configuration;
 
-    public AuthController(IAuthService authService, 
-        UserManager<User> user,
-        SignInManager<User> signInManager,
-        IConfiguration configuration)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
-        _userManager = user;
-        _signInManager=signInManager;
-        _configuration=configuration;
+    }
+
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel login)
     {
-        if (ModelState.IsValid)
-        {
-            var result = await _authService.RegisterAsync(model);
-            if (result.Succeeded)
-            {
-                var user = await _userManager.FindByNameAsync(model.Username);
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
-            }
+        if (!ModelState.IsValid)
+            return View(login);
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+        var token = await _authService.LoginAsync(login);
+
+        if (token == null)
+        {
+            ModelState.AddModelError("", "Invalid login credentials.");
+            return View(login);
         }
 
-        return View(model);
+        Response.Cookies.Append("AuthToken", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            Expires = DateTimeOffset.UtcNow.AddHours(1)
+        });
+
+        return RedirectToAction(nameof(Index), "Home");
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginViewModel loginModel)
+    [HttpGet]
+    public IActionResult Register()
     {
-        var token = await _authService.LoginAsync(loginModel);
-        if (token != null)
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterViewModel addOrUpdateUser)
+    {
+        if (!ModelState.IsValid)
+            return View(addOrUpdateUser);
+
+        var token = await _authService.RegisterAsync(addOrUpdateUser);
+
+        if (token == null)
         {
-            return Ok(new { token, expiration = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpiryInMinutes"])) });
+            ModelState.AddModelError("", "Registration failed.");
+            return View(addOrUpdateUser);
         }
 
-        return Unauthorized();
+        Response.Cookies.Append("AuthToken", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            Expires = DateTimeOffset.UtcNow.AddHours(1)
+        });
+
+        return RedirectToAction(nameof(Login));
     }
 }

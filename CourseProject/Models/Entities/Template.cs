@@ -17,6 +17,5 @@ public class Template
     // Navigation properties
     public ICollection<Question> Questions { get; set; }
     public ICollection<Form> Forms { get; set; }
-    public ICollection<TemplateTag> TemplateTags { get; set; }
 }
 
