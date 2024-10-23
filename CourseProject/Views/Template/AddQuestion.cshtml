@@ -1,0 +1,30 @@
+﻿@model CourseProject.ViewModels.Template.CreateQuestionViewModel
+
+<h1>Add Question to Template</h1>
+
+<form asp-action="AddQuestion" method="post">
+    <div class="form-group">
+        <label asp-for="QuestionText" class="control-label"></label>
+        <input asp-for="QuestionText" class="form-control" />
+        <span asp-validation-for="QuestionText" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="QuestionType" class="control-label"></label>
+        <select asp-for="QuestionType" class="form-control">
+            <option>Text</option>
+            <option>MultipleChoice</option>
+            <option>Number</option>
+        </select>
+        <span asp-validation-for="QuestionType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsRequired" class="control-label"></label>
+        <input asp-for="IsRequired" type="checkbox" class="form-control" />
+    </div>
+
+    <input type="hidden" asp-for="TemplateId" />
+
+    <button type="submit" class="btn btn-primary">Add Question</button>
+</form>

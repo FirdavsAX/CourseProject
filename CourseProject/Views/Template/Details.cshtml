@@ -1,0 +1,17 @@
+﻿@model CourseProject.Models.Entities.Template
+
+<h1>@Model.Title</h1>
+
+<p><strong>Topic:</strong> @Model.Topic</p>
+<p><strong>Description:</strong> @Model.Description</p>
+<p><strong>Created:</strong> @Model.CreatedDate.ToShortDateString()</p>
+
+<h2>Questions</h2>
+<ul>
+    @foreach (var question in Model.Questions)
+    {
+        <li>@question.QuestionText (Type: @question.QuestionType)</li>
+    }
+</ul>
+
+<a asp-action="AddQuestion" asp-route-templateId="@Model.Id" class="btn btn-secondary">Add Question</a>
