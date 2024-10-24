@@ -1,6 +1,6 @@
-﻿using CourseProject.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using CourseProject.Interfaces;
+using CourseProject.ViewModels.Authorization;
 
 namespace CourseProject.Controllers;
 

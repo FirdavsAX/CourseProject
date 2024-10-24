@@ -1,42 +1,63 @@
 ﻿using CourseProject.Data;
 using CourseProject.Interfaces;
 using CourseProject.Models.Entities;
+using CourseProject.ViewModels;
+using CourseProject.ViewModels.Template;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace CourseProject.Services;
-
-public class TemplateService : ITemplateService
+namespace CourseProject.Services
 {
-    private readonly FormsDbContext _context;
-
-    public TemplateService(FormsDbContext context)
+    public class TemplateService : ITemplateService
     {
-        _context = context;
-    }
+        private readonly FormsDbContext _context;
 
-    public async Task<List<Template>> GetAllTemplatesAsync()
-    {
-        return await _context.Templates.Include(t => t.Author).ToListAsync();
-    }
+        public TemplateService(FormsDbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<Template> GetTemplateByIdAsync(int id)
-    {
-        return await _context.Templates
-            .Include(t => t.Questions)
-            .FirstOrDefaultAsync(t => t.Id == id);
-    }
+        public async Task CreateTemplateAsync(CreateTemplateViewModel model, string authorId)
+        {
+            var template = new Template
+            {
+                Title = model.Title,
+                Description = model.Description,
+                Topic = model.Topic,
+                IsPublic = model.IsPublic,
+                ImageUrl = model.ImageUrl,
+                AuthorId = authorId,
+                Created = DateTime.UtcNow,
+                Questions = model.Questions.Select(q => new Question
+                {
+                    QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType,
+                    IsRequired = q.IsRequired,
+                    CreatedDate = DateTime.UtcNow
+                }).ToList()
+            };
 
-    public async Task CreateTemplateAsync(Template template)
-    {
-        _context.Templates.Add(template);
-        await _context.SaveChangesAsync();
-    }
+            _context.Templates.Add(template);
+            await _context.SaveChangesAsync();
+        }
 
-    public async Task AddQuestionAsync(Question question)
-    {
-        _context.Questions.Add(question);
-        await _context.SaveChangesAsync();
+        public async Task<List<CreateTemplateViewModel>> GetAllTemplatesAsync()
+        {
+            return await _context.Templates
+                .Select(t => new CreateTemplateViewModel
+                {
+                    Title = t.Title,
+                    Description = t.Description,
+                    Topic = t.Topic,
+                    IsPublic = t.IsPublic,
+                    ImageUrl = t.ImageUrl,
+                    Questions = t.Questions.Select(q => new QuestionViewModel
+                    {
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType,
+                        IsRequired = q.IsRequired
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
     }
 }

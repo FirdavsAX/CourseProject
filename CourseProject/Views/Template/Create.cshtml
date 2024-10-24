@@ -1,35 +1,52 @@
-﻿@model CourseProject.ViewModels.CreateTemplateViewModel
+﻿@model CourseProject.ViewModels.Template.CreateTemplateViewModel
 
-<h1>Create New Template</h1>
+@{
+    ViewData["Title"] = "Create Template";
+}
+
+<h2>Create Template</h2>
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label asp-for="Title" class="control-label"></label>
+        <label asp-for="Title"></label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
+        <label asp-for="Description"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Topic" class="control-label"></label>
+        <label asp-for="Topic"></label>
         <input asp-for="Topic" class="form-control" />
         <span asp-validation-for="Topic" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="IsPublic" class="control-label"></label>
-        <input asp-for="IsPublic" type="checkbox" class="form-control" />
+        <label asp-for="IsPublic"></label>
+        <input asp-for="IsPublic" type="checkbox" class="form-check-input" />
+        <span asp-validation-for="IsPublic" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="ImageUrl" class="control-label"></label>
+        <label asp-for="ImageUrl"></label>
         <input asp-for="ImageUrl" class="form-control" />
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+
+    <h3>Questions</h3>
+    <div id="questions-container">
+        <div class="form-group">
+            <label>Question Text</label>
+            <input name="Questions[0].QuestionText" class="form-control" />
+            <label>Question Type</label>
+            <input name="Questions[0].QuestionType" class="form-control" />
+            <label>Is Required</label>
+            <input name="Questions[0].IsRequired" type="checkbox" class="form-check-input" />
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>

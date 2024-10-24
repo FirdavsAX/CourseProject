@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CourseProject.ViewModels;
+namespace CourseProject.ViewModels.Authorization;
 
 public class LoginViewModel
 {

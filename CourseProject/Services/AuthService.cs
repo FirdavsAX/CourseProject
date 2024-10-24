@@ -1,6 +1,5 @@
 ﻿using CourseProject.Interfaces;
 using CourseProject.Models.Entities;
-using CourseProject.ViewModels;
 using CourseProject.ViewModels.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

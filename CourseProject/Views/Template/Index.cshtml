@@ -1,0 +1,29 @@
+﻿@model List<CourseProject.ViewModels.Template.CreateTemplateViewModel>
+
+@{
+    ViewData["Title"] = "Templates";
+}
+
+<h2>Templates</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Topic</th>
+            <th>Is Public</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var template in Model)
+        {
+            <tr>
+                <td>@template.Title</td>
+                <td>@template.Description</td>
+                <td>@template.Topic</td>
+                <td>@template.IsPublic</td>
+            </tr>
+        }
+    </tbody>
+</table>
